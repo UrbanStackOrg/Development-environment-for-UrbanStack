@@ -1,0 +1,147 @@
+version: '2'
+
+services:
+  # Compute: HTTP API and task producer
+  compute:
+    build: ../morpheo-compute/api
+    container_name: morpheo_compute
+    restart: on-failure
+    mem_limit: 16m
+    memswap_limit: 0
+    command: -host 0.0.0.0 -port 80 -broker nsq -broker-host nsqd -broker-port 4150
+    ports:
+    - "${COMPUTE_PORT}:80/tcp"
+    volumes:
+    - ../morpheo-fabric-bootstrap/artifacts/crypto-config:/secrets/crypto-config
+    - ./config_aphp.yaml:/secrets/config.yaml
+    networks:
+    - internal
+    - morpheo_network
+    depends_on:
+    - nsqd
+
+  # Compute: task consumer
+  compute-worker:
+    build: ../morpheo-compute/worker
+    container_name: morpheo_worker
+    restart: unless-stopped
+    mem_limit: 64m
+    memswap_limit: 0
+    environment:
+    - "DOCKER_HOST=tcp://dind-executor:2376"
+    command: -nsqlookupd-urls "nsqlookupd:4161" -storage-host "storage" -storage-user ${STORAGE_AUTH_USER} -storage-password ${STORAGE_AUTH_PASSWORD} -orchestrator-host "orchestrator" -orchestrator-port 5000 -learn-timeout 5m -predict-timeout 5m
+    privileged: true
+    networks:
+    - internal
+    - morpheo_network
+    volumes:
+    - compute_datadir:/data
+    - ../morpheo-fabric-bootstrap/artifacts/crypto-config:/secrets/crypto-config
+    - ./config_aphp.yaml:/secrets/config.yaml
+    depends_on:
+    - nsqlookupd
+    - dind-executor
+    - storage
+
+  # Docker-in-Docker container to run untrusted code
+  dind-executor:
+    build: ../morpheo-go-packages/utils/dind-daemon
+    container_name: morpheo_dind
+    mem_limit: 512m
+    memswap_limit: 0
+    restart: unless-stopped
+    privileged: true
+    command: --host tcp://0.0.0.0:2376
+    volumes:
+    - compute_datadir:/data
+    networks:
+    - internal
+
+  # Nsqlookupd: service discovery for Nsqd
+  nsqlookupd:
+    container_name: morpheo_nsqlookupd
+    image: nsqio/nsq:latest
+    mem_limit: 16m
+    memswap_limit: 0
+    restart: unless-stopped
+    command: /nsqlookupd
+    networks:
+    - internal
+    depends_on:
+    - nsqd
+
+  # Nsqd: the distributed broker
+  nsqd:
+    image: nsqio/nsq:latest
+    container_name: morpheo_nsqd
+    mem_limit: 32m
+    memswap_limit: 0
+    restart: unless-stopped
+    command: /nsqd --lookupd-tcp-address="nsqlookupd:4160"
+    networks:
+    - internal
+
+  # Nsq Admin frontend
+  nsqadmin:
+    image: nsqio/nsq:latest
+    container_name: morpheo_nsqadmin
+    mem_limit: 16m
+    memswap_limit: 0
+    restart: unless-stopped
+    command: /nsqadmin --lookupd-http-address="nsqlookupd:4161"
+    networks:
+    - internal
+    ports:
+    - "${NSQ_ADMIN_PORT}:4171/tcp"
+
+  # Storage
+  storage:
+    build: ../morpheo-storage/api
+    container_name: morpheo_storage
+    restart: unless-stopped
+    command: -host 0.0.0.0 -port 80 -user ${STORAGE_AUTH_USER} -password ${STORAGE_AUTH_PASSWORD}
+    ## Stops the container from taking up all the cache memory on big file
+    ## uploads
+    mem_limit: 256m
+    memswap_limit: 1024m
+    volumes:
+    - ./data/storage:/data
+    # - ${GOOGLE_APPLICATION_CREDENTIALS_DIR}:/.gcloud
+    - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+    # environment:
+    # - GOOGLE_APPLICATION_CREDENTIALS=/.gcloud/credentials
+    ports:
+    - "${STORAGE_PORT}:80/tcp"
+    networks:
+    - internal
+    - morpheo_network
+    depends_on:
+    - postgres
+
+  # Postgres instance for the storage service
+  postgres:
+    image: postgres:alpine
+    container_name: morpheo_postgres
+    mem_limit: 64m
+    memswap_limit: 0
+    volumes:
+    - ./data/postgresql:/var/lib/postgresql/data
+
+    environment:
+    - POSTGRES_PASSWORD=p
+    - POSTGRES_USER=u
+    - POSTGRES_DB=db
+    networks:
+      - internal
+
+networks:
+  # Accessible from the outside (a mock of what some call "the Internet")
+  internal:
+    driver: bridge
+  morpheo_network:
+    external:
+      name: net_byfn
+
+volumes:
+  compute_datadir:
+    driver: local

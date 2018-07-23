@@ -1,0 +1,4 @@
+2018-07-04 04:56:23.785 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001[0m Using default escc
+2018-07-04 04:56:23.785 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002[0m Using default vscc
+Query Result: [{"docType":"algo","key":"algo_0","name":"test1","problem":"problem_1","storageAddress":"99o81bfc-b5f4-4ba2-b81a-b464248f02d1"},{"docType":"algo","key":"algo_1","name":"test2","problem":"problem_1","storageAddress":"22m81bfc-b5f4-4ba2-b81a-b464248f02d1"}]
+2018-07-04 04:56:23.789 UTC [main] main -> INFO 003[0m Exiting.....
