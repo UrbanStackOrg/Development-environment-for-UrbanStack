@@ -71,11 +71,11 @@ channels:
     # operational decisions to share loads from applications among the orderers.  The values must
     # be "names" of orgs defined under "organizations/peers"
     orderers:
-      - orderer.morpheo.co
+      - orderer.urbanstack.co
 
     # Required. list of peers from participating orgs
     peers:
-      peer0.aphp.morpheo.co:
+      peer0.aphp.urbanstack.co:
         # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
         # have the chaincode installed. The app can also use this property to decide which peers
         # to send the chaincode install request. Default: true
@@ -106,10 +106,10 @@ channels:
   orgchannel:
 
     orderers:
-      - orderer.morpheo.co
+      - orderer.urbanstack.co
 
     peers:
-      peer0.aphp.morpheo.co:
+      peer0.aphp.urbanstack.co:
         endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true
@@ -123,10 +123,10 @@ organizations:
     mspid: AphpMSP
 
     # Needed to load users crypto keys and certs for this org (absolute path or relative to global crypto path, DEV mode)
-    cryptoPath:  peerOrganizations/aphp.morpheo.co/users/{userName}@aphp.morpheo.co/msp
+    cryptoPath:  peerOrganizations/aphp.urbanstack.co/users/{userName}@aphp.urbanstack.co/msp
 
     peers:
-      - peer0.aphp.morpheo.co
+      - peer0.aphp.urbanstack.co
 
     # [Optional]. Certificate Authorities issue certificates for identification purposes in a Fabric based
     # network. Typically certificates provisioning is done in a separate process outside of the
@@ -154,7 +154,7 @@ organizations:
       mspID: "OrdererOrg"
 
       # Needed to load users crypto keys and certs for this org (absolute path or relative to global crypto path, DEV mode)
-      cryptoPath: ordererOrganizations/morpheo.co/users/{userName}@morpheo.co/msp
+      cryptoPath: ordererOrganizations/urbanstack.co/users/{userName}@urbanstack.co/msp
 
 
 #
@@ -163,38 +163,38 @@ organizations:
 # SDK is implementation specific. Consult each SDK's documentation for its handling of orderers.
 #
 orderers:
-  orderer.morpheo.co:
-    url: grpcs://orderer.morpheo.co:7050
+  orderer.urbanstack.co:
+    url: grpcs://orderer.urbanstack.co:7050
 
     # these are standard properties defined by the gRPC library
     # they will be passed in as-is to gRPC client constructor
     grpcOptions:
-      ssl-target-name-override: orderer.morpheo.co
+      ssl-target-name-override: orderer.urbanstack.co
       grpc-max-send-message-length: 15
 
     tlsCACerts:
       # Certificate location absolute path
-      path: /secrets/crypto-config/ordererOrganizations/morpheo.co/tlsca/tlsca.morpheo.co-cert.pem
+      path: /secrets/crypto-config/ordererOrganizations/urbanstack.co/tlsca/tlsca.urbanstack.co-cert.pem
 
 #
 # List of peers to send various requests to, including endorsement, query
 # and event listener registration.
 #
 peers:
-  peer0.aphp.morpheo.co:
+  peer0.aphp.urbanstack.co:
     # this URL is used to send endorsement and query requests
-    url: grpcs://peer0.aphp.morpheo.co:7051
+    url: grpcs://peer0.aphp.urbanstack.co:7051
 
     # this URL is used to connect the EventHub and registering event listeners
-    eventUrl: grpcs://peer0.aphp.morpheo.co:7053
+    eventUrl: grpcs://peer0.aphp.urbanstack.co:7053
 
     grpcOptions:
-      ssl-target-name-override: peer0.aphp.morpheo.co
+      ssl-target-name-override: peer0.aphp.urbanstack.co
       grpc.http2.keepalive_time: 15
 
     tlsCACerts:
       # Certificate location absolute path
-      path: /secrets/crypto-config/peerOrganizations/aphp.morpheo.co/tlsca/tlsca.aphp.morpheo.co-cert.pem
+      path: /secrets/crypto-config/peerOrganizations/aphp.urbanstack.co/tlsca/tlsca.aphp.urbanstack.co-cert.pem
 
 #
 # Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows
@@ -210,7 +210,7 @@ certificateAuthorities:
       verify: true
     tlsCACerts:
       # Comma-Separated list of paths
-      path: ../MorpheoOrg/morpheo-fabric-bootstrap/artifacts/crypto-config/peerOrganizations/aphp.morpheo.co/peers/peer0.aphp.morpheo.co/tls/ca.crt
+      path: ../UrbanStackOrg/urbanstack-fabric-bootstrap/artifacts/crypto-config/peerOrganizations/aphp.urbanstack.co/peers/peer0.aphp.urbanstack.co/tls/ca.crt
       # Client key and cert for SSL handshake with Fabric CA
       client:
        keyfile:

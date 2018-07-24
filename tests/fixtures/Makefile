@@ -82,7 +82,7 @@ gen-fixtures: tar-gz
 register-algo: orchestrator-clean-test
 	@echo "\nRegistering new algo..."
 	@echo "================================================================================="
-	@curl -H "Content-Type: application/json" -X POST -u $${USER_AUTH}:$${PWD_AUTH} -d '{"name":"fastest","problem":"e568587d-572c-4714-8084-378ed50d1c52","uuid":"8f5c97ff-ee61-4cf1-a0ac-6852bac08408"}' http://orchestrator.morpheo.co/algo
+	@curl -H "Content-Type: application/json" -X POST -u $${USER_AUTH}:$${PWD_AUTH} -d '{"name":"fastest","problem":"e568587d-572c-4714-8084-378ed50d1c52","uuid":"8f5c97ff-ee61-4cf1-a0ac-6852bac08408"}' http://orchestrator.urbanstack.co/algo
 
 orchestrator-clean-test:
 	@echo "Deleting learnuplets and algo from previous tests..."

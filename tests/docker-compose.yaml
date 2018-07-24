@@ -5,16 +5,16 @@ services:
     build: .
     container_name: integration_tests
     volumes:
-    - "../../../MorpheoOrg:/go/src/github.com/MorpheoOrg"
+    - "../../../UrbanStackOrg:/go/src/github.com/UrbanStackOrg"
     - "../config_aphp.yaml:/secrets/config.yaml"
-    - ../../morpheo-fabric-bootstrap/crypto-config:/secrets/crypto-config
-    working_dir: /go/src/github.com/MorpheoOrg/morpheo-devenv/tests
+    - ../../urbanstack-fabric-bootstrap/crypto-config:/secrets/crypto-config
+    working_dir: /go/src/github.com/UrbanStackOrg/urbanstack-devenv/tests
     command: go run integration.go
     networks:
-    - morpheo_network
+    - urbanstack_network
     tty: true
 
 networks:
-  morpheo_network:
+  urbanstack_network:
     external:
       name: net_byfn

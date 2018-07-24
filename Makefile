@@ -1,9 +1,9 @@
 #
-# Copyright Morpheo Org. 2017
+# Copyright UrbanStack Org. 2017
 #
-# contact@morpheo.co
+# contact@urbanstack.co
 #
-# This software is part of the Morpheo project, an open-source machine
+# This software is part of the UrbanStack project, an open-source machine
 # learning platform.
 #
 # This software is governed by the CeCILL license, compatible with the
@@ -44,31 +44,31 @@ COMPOSE_CMD = STORAGE_PORT=8081 STORAGE_AUTH_USER=u STORAGE_AUTH_PASSWORD=p \
 
 # Target configuration
 .DEFAULT: up
-.PHONY: $(BIN_TARGETS) $(BIN_CLEAR_TARGETS) bin-clear $(VENDOR_TARGETS) morpheo-network up stop logs down clean tests full-tests
+.PHONY: $(BIN_TARGETS) $(BIN_CLEAR_TARGETS) bin-clear $(VENDOR_TARGETS) urbanstack-network up stop logs down clean tests full-tests
 
 $(BIN_TARGETS):
 	@echo "\n**** [$@] builds ****" | tr a-z A-Z
-	@$(MAKE) -C ../morpheo-$@ bin
+	@$(MAKE) -C ../urbanstack-$@ bin
 
 $(BIN_CLEAR_TARGETS):
 	@echo "\n**** [$@] builds ****" | tr a-z A-Z
-	@$(MAKE) -C ../morpheo-$(subst -clean,,$@) bin-clean
+	@$(MAKE) -C ../urbanstack-$(subst -clean,,$@) bin-clean
 
 bin-clean: $(BIN_CLEAR_TARGETS)
 
 $(VENDOR_TARGETS):
 	@echo "\n**** [$(subst -vendor,,$@)] vendor update ****" | tr a-z A-Z
-	@$(MAKE) -C ../morpheo-$(subst -vendor,,$@) vendor vendor-replace-local
+	@$(MAKE) -C ../urbanstack-$(subst -vendor,,$@) vendor vendor-replace-local
 
 network:
-	cd ../morpheo-fabric-bootstrap && \
+	cd ../urbanstack-fabric-bootstrap && \
 	./byfn.sh -m up
 
 network-down:
-	cd ../morpheo-fabric-bootstrap && \
+	cd ../urbanstack-fabric-bootstrap && \
 	./byfn.sh -m down
 
-up: $(VENDOR_TARGETS) $(BIN_TARGETS) # morpheo-network
+up: $(VENDOR_TARGETS) $(BIN_TARGETS) # urbanstack-network
 	@echo  "\n**** [DEVENV] DOCKER-COMPOSE UP ****"
 	$(COMPOSE_CMD) up -d --build
 
@@ -78,7 +78,7 @@ stop:
 logs:
 	$(COMPOSE_CMD) logs --follow storage compute compute-worker
 
-down: # morpheo-network-down
+down: # urbanstack-network-down
 	$(COMPOSE_CMD) down
 
 clean: down
@@ -86,13 +86,13 @@ clean: down
 
 
 tests: $(FIXTURE_TARGETS)
-	$(MAKE) -C ../morpheo-go-packages vendor
+	$(MAKE) -C ../urbanstack-go-packages vendor
 	docker-compose -f tests/docker-compose.yaml up
 
 $(FIXTURE_TARGETS):
 	$(MAKE) -C tests/fixtures gen-fixtures
 
 full-tests:
-	$(MAKE) -C ../morpheo-compute tests
-	$(MAKE) -C ../morpheo-storage tests
+	$(MAKE) -C ../urbanstack-compute tests
+	$(MAKE) -C ../urbanstack-storage tests
 	$(MAKE) tests

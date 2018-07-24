@@ -1,6 +1,6 @@
 # Fixtures
 
-This directory holds a very light set of 4 data, 2 algos and 2 problems to perform quick testing on the Morpheo Platform.
+This directory holds a very light set of 4 data, 2 algos and 2 problems to perform quick testing on the UrbanStack Platform.
 
 The **fastest** algo and problem are very light docker images (< 3MB) written in Golang. These scripts mainly perform copies of predefined fixture files.
 
@@ -14,7 +14,7 @@ make train         : Build algo and run task *train*
      perf          : Build problem and run task *perf*
      tar-gz        : Generate tar-gz archive of algo and problem
      clean         : Clean all previous command outputs
-     gen-fixtures  : Generate fixtures for tests, and place them in morpheo-devenv/data
+     gen-fixtures  : Generate fixtures for tests, and place them in urbanstack-devenv/data
      register-algo : Register the test algo to the orchestrator, cleaning previous tests
 ```
 

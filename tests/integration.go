@@ -9,12 +9,12 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/MorpheoOrg/morpheo-go-packages/client"
-	"github.com/MorpheoOrg/morpheo-go-packages/common"
+	"github.com/UrbanStackOrg/urbanstack-go-packages/client"
+	"github.com/UrbanStackOrg/urbanstack-go-packages/common"
 )
 
 var (
-	defaultpathFixturesYAML = path.Join(os.Getenv("GOPATH"), "src/github.com/MorpheoOrg/morpheo-devenv/tests/fixtures.yaml")
+	defaultpathFixturesYAML = path.Join(os.Getenv("GOPATH"), "src/github.com/UrbanStackOrg/urbanstack-devenv/tests/fixtures.yaml")
 	defaultPathPeerConfig   = "/secrets/config.yaml"
 
 	pathFixturesYAML = Getenv("PATH_FIXTURES", defaultpathFixturesYAML)
